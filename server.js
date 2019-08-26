@@ -3,66 +3,48 @@ const app = express()
 const request = require('superagent');
 const bodyParser = require('body-parser')
 // require('superagent-proxy')(request)
-// const {getApi} = require('./utill/api')
-// MongoDB
-const MongoClient = require('mongodb').MongoClient
-var db
+
+// const { getApi } = require('./utill/api')
+const MongoDB = require('./utill/mongo')
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const mongoUrl = `mongodb://2o5572137z.qicp.vip:31754/youtube`
-const mongoColl = `channel`
-MongoClient.connect(mongoUrl, (err, database) => {
-  if (err) return console.log(err)
-  db = database
-})
-
 // setup
 app.listen(5008, () => {
-  console.log('listen on http://localhost:5008')
+  console.log('listen on http://34.92.145.1:5008/')
 })
 
 app.post('/quotes', (req, res) => {
   console.log(req.body)
-  requestAPI('')
-  res.sendStatus(204)
-
-
-  db.collection(mongoColl).insertOne(req.body, (err, result) => {
-    console.log('ok')
+  requestAPI().then(result=>{
+    console.log(result)
+    MongoDB.insertOne(JSON.parse(result.text))
+  }).catch(err=>{
+    console.log(err)
   })
-
+  res.sendStatus(204)
 })
 
 app.get('/quotes', (req, res) => {
-  var cursor = db.collection(mongoColl).find({}).toArray((err, result) => {
-    console.log(result)
-    res.send(result)
-  })
+  MongoDB.find({})
+  res.send('hello')
 })
 
 app.get('/', express.static(__dirname + '/public'))
 
-// routes
-app.get('/hello', (req, res) => {
-  res.send('Hello, world')
-})
-
 
 //获取数据
 function requestAPI(url, type) {
-  // HTTP, HTTPS, or SOCKS proxy to use 
-  // var proxy_uri = process.env.http_proxy || 'http://127.0.0.1:7891';
-  // console.log(proxy_uri)
-  url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=&maxResults=50'
-  // url = 'https://wwww.baidu.com'
-  console.log(11)
-  request.get(url).set('Referer','commentpicker.com').end((err, result) => {
-    if (err) {
-      console.log('失败')
-    }
-    console.log(result)
+  return new Promise((resolve, reject) => {
+    url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=&maxResults=50'
+    // url = 'https://wwww.baidu.com'
+    request.get(url).end((err, result) => {
+      if (err) {
+        reject('获取失败')
+      }
+      resolve(result)
+    })
   })
 }
 

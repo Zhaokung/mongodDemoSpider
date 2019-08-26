@@ -2,58 +2,27 @@
 const MongoClient = require('mongodb').MongoClient
 var db
 
-MongoClient.connect('mongodb://192.168.1.27:27017/youtube', (err, database) =>{
-
+const mongoUrl = `mongodb://2o5572137z.qicp.vip:31754/`
+const database = `youtube`
+const Collection = `channel`
+MongoClient.connect(`${mongoUrl}${database}`, (err, database) =>{
   if(err) return console.log(err)
-
   db = database
-
-  // setup
-  app.listen(5008, () => {
-    console.log('listen on 5008')
-  })
-
-  app.post('/quotes', (req, res) => {
-    console.log(req.body)
-
-    database.collection('quotes').insertOne(req.body, (err, result) => {
-      
-    })
-
-  })
-
-  app.get('/quotes', (req, res) => {
-    var cursor = db.collection('quotes').find({}).toArray((err,result)=>{
-      console.log(result)
-      res.send(result)
-    })
-  })
-
 })
 
 const MongoDB = {
   insertOne(data){
-     db.collection(collection).insertOne(data,(err,result) =>{
+     db.collection(Collection).insertOne(data,(err,result) =>{
       if (err) return console.log(err)
-
-      console.log('saved to database')
-
-      res.sendStatus(204) 
+      console.log('saved to database') 
      })
   },
   find(data){
-    var cursor = db.collection('quotes').find({}).toArray((err,result)=>{
-      console.log(result)
-      res.send(result)
+    var cursor = db.collection(Collection).find(data).toArray((err,result)=>{
+      console.log(resul)
     })
   }
   
 }
 
-// const SQL=() =>{
-//   try {
-//     const collection = 'channel'
-//     return db.collection(collection)
-//   } catch (error) {
-//   }
-// }
+module.exports = MongoDB
