@@ -15,7 +15,6 @@ const MongoDB = {
     return new Promise((resolve,reject) =>{
       db.collection(Collection).insertOne(data,(err,result) =>{
        if (err){
-         console.log(err)
         reject(err)
        }
        console.log('saved to database') 

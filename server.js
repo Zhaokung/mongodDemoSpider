@@ -59,8 +59,9 @@ function start() {
   if (csvArry[count]) {
     console.log(csvArry[count])
     requestAPI(csvArry[count]).then(result => {
-      console.log(result)
+     
       const data = JSON.parse(result.text)
+      console.log(data.items.length,'items length')
       data.queryString = csvArry[count].q
       MongoDB.insertOne(data).then(result => {
         count++
