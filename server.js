@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const request = require('superagent');
 const bodyParser = require('body-parser')
-require('superagent-proxy')(request)
+// require('superagent-proxy')(request)
 // const {getApi} = require('./utill/api')
 // MongoDB
 const MongoClient = require('mongodb').MongoClient
@@ -25,10 +25,12 @@ app.listen(5008, () => {
 
 app.post('/quotes', (req, res) => {
   console.log(req.body)
-  // requestAPI('')
+  requestAPI('')
+  res.sendStatus(204)
+
+
   db.collection(mongoColl).insertOne(req.body, (err, result) => {
     console.log('ok')
-    res.sendStatus(204)
   })
 
 })
@@ -51,12 +53,12 @@ app.get('/hello', (req, res) => {
 //获取数据
 function requestAPI(url, type) {
   // HTTP, HTTPS, or SOCKS proxy to use 
-  var proxy_uri = process.env.http_proxy || 'http://127.0.0.1:7891';
-  console.log(proxy_uri)
-  // url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=&maxResults=50'
-  url = 'https://wwww.baidu.com'
+  // var proxy_uri = process.env.http_proxy || 'http://127.0.0.1:7891';
+  // console.log(proxy_uri)
+  url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=&maxResults=50'
+  // url = 'https://wwww.baidu.com'
   console.log(11)
-  request.get(url).proxy(proxy_uri).end((err, result) => {
+  request.get(url).set('Referer','commentpicker.com').end((err, result) => {
     if (err) {
       console.log('失败')
     }
