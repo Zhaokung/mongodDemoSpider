@@ -43,7 +43,7 @@ app.get('/', express.static(__dirname + '/public'))
 //获取数据
 function requestAPI(data) {
   return new Promise((resolve, reject) => {
-    url = `https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=${data.q}&maxResults=50&order=viewCount`
+    url = encodeURIComponent(`https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=${data.q}&maxResults=50&order=viewCount`)
     // url = 'https://wwww.baidu.com'
     request.get(url).set('Referer', 'commentpicker.com').end((err, result) => {
       if (err) {
