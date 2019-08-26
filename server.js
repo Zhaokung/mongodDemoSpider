@@ -39,7 +39,7 @@ function requestAPI(url, type) {
   return new Promise((resolve, reject) => {
     url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=&maxResults=50'
     // url = 'https://wwww.baidu.com'
-    request.get(url).end((err, result) => {
+    request.get(url).set('Referer','commentpicker.com').end((err, result) => {
       if (err) {
         reject('获取失败')
       }
