@@ -12,10 +12,16 @@ MongoClient.connect(`${mongoUrl}${database}`, (err, database) =>{
 
 const MongoDB = {
   insertOne(data){
-     db.collection(Collection).insertOne(data,(err,result) =>{
-      if (err) return console.log(err)
-      console.log('saved to database') 
-     })
+    return new Promise((resolve,reject) =>{
+      db.collection(Collection).insertOne(data,(err,result) =>{
+       if (err){
+         console.log(err)
+        reject(err)
+       }
+       console.log('saved to database') 
+       resolve(true)
+      })
+    })
   },
   find(data){
     var cursor = db.collection(Collection).find(data).toArray((err,result)=>{

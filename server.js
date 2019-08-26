@@ -3,9 +3,21 @@ const app = express()
 const request = require('superagent');
 const bodyParser = require('body-parser')
 // require('superagent-proxy')(request)
-
 // const { getApi } = require('./utill/api')
+
+const { getCsv } = require('./utill/readerCsv')
 const MongoDB = require('./utill/mongo')
+const csvArry = []
+
+getCsv().then(res=>{
+  if(csvArry){
+    res.forEach(element => {
+      csvArry.push({"q":element.name})
+    });
+  }
+  //  console.log(csvArry)
+})
+
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -16,13 +28,7 @@ app.listen(5008, () => {
 })
 
 app.post('/quotes', (req, res) => {
-  console.log(req.body)
-  requestAPI().then(result=>{
-    console.log(result)
-    MongoDB.insertOne(JSON.parse(result.text))
-  }).catch(err=>{
-    console.log(err)
-  })
+  start()
   res.sendStatus(204)
 })
 
@@ -35,11 +41,11 @@ app.get('/', express.static(__dirname + '/public'))
 
 
 //获取数据
-function requestAPI(url, type) {
+function requestAPI(data) {
   return new Promise((resolve, reject) => {
-    url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=&maxResults=50'
+    url = `https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=${data.q}&maxResults=50&order=viewCount`
     // url = 'https://wwww.baidu.com'
-    request.get(url).set('Referer','commentpicker.com').end((err, result) => {
+    request.get(url).set('Referer', 'commentpicker.com').end((err, result) => {
       if (err) {
         reject('获取失败')
       }
@@ -48,6 +54,31 @@ function requestAPI(url, type) {
   })
 }
 
+let count = 0
+function start() {
+  if (csvArry[count]) {
+    console.log(csvArry[count])
+    requestAPI(csvArry[count]).then(result => {
+      console.log(result)
+      const data = JSON.parse(result.text)
+      data.queryString = csvArry[count].q
+      MongoDB.insertOne(data).then(result => {
+        count++
+        sleep(start, 8)
+      })
+    })
+  } else {
+    console.log("down")
+    return false
+  }
+}
+
+function sleep(func, space) {
+  setTimeout(() => {
+    console.log(count)
+    func()
+  }, 1000 * Math.random() * space)
+}
 
 
 

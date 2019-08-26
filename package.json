@@ -19,6 +19,7 @@
   "homepage": "https://github.com/tonyjohnvan/mongodemo#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "csvtojson": "^2.0.10",
     "eslint": "^6.2.1",
     "express": "^4.14.0",
     "mongodb": "^2.2.11",

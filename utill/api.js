@@ -1,5 +1,5 @@
 var request = require("request");
-var url = 'https://www.baidu.com'
+var url = 'https://www.googleapis.com/youtube/v3/search'
 var options = {
     method: 'GET',
     url: 'https://www.googleapis.com/youtube/v3/search',
