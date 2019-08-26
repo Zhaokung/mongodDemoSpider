@@ -11,7 +11,7 @@ var db
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const mongoUrl = `mongodb://192.168.1.27:27017/youtube`
+const mongoUrl = `mongodb://2o5572137z.qicp.vip:31754/youtube`
 const mongoColl = `channel`
 MongoClient.connect(mongoUrl, (err, database) => {
   if (err) return console.log(err)
@@ -25,8 +25,11 @@ app.listen(5008, () => {
 
 app.post('/quotes', (req, res) => {
   console.log(req.body)
-  requestAPI('')
-  res.sendStatus(204)
+  // requestAPI('')
+  db.collection(mongoColl).insertOne(req.body, (err, result) => {
+    console.log('ok')
+    res.sendStatus(204)
+  })
 
 })
 
