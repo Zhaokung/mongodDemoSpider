@@ -4,19 +4,19 @@ const request = require('superagent');
 const bodyParser = require('body-parser')
 // require('superagent-proxy')(request)
 // const { getApi } = require('./utill/api')
-
+const FormData = require('form-data');
 const { getCsv } = require('./utill/readerCsv')
 const MongoDB = require('./utill/mongo')
 const csvArry = []
 
-getCsv().then(res=>{
-  if(csvArry){
-    res.forEach(element => {
-      csvArry.push({"q":element.name})
-    });
-  }
-   console.log(csvArry.length)
-})
+// getCsv().then(res=>{
+//   if(csvArry){
+//     res.forEach(element => {
+//       csvArry.push({"q":element.name})
+//     });
+//   }
+//    console.log(csvArry.length)
+// })
 
 
 app.use(express.static('public'));
@@ -28,23 +28,26 @@ app.listen(5008, () => {
 })
 
 app.post('/quotes', (req, res) => {
-  start()
+  // start()
+  // MongoDB.find({},0,1).then(result=>{
+  //   console.log(result)
+  // })
+
+  getChannelVideo()
   res.sendStatus(204)
 })
 
 app.get('/quotes', (req, res) => {
-  MongoDB.find({})
   res.send('hello')
 })
 
 app.get('/', express.static(__dirname + '/public'))
 
 
-//获取数据
+//API获取数据
 function requestAPI(data) {
   return new Promise((resolve, reject) => {
     url = `https://www.googleapis.com/youtube/v3/search?part=id,snippet&key=AIzaSyCVipmBlDn3AGGYxh4E2aqLvGQk0YhDahI&type=channel&q=${encodeURIComponent(data.q)}&maxResults=50&order=viewCount`
-    // url = 'https://wwww.baidu.com'
     request.get(url).set('Referer', 'commentpicker.com').end((err, result) => {
       if (err) {
         reject('获取失败')
@@ -59,9 +62,9 @@ function start() {
   if (csvArry[count]) {
     console.log(csvArry[count])
     requestAPI(csvArry[count]).then(result => {
-     
+
       const data = JSON.parse(result.text)
-      console.log(data.items.length,'items length')
+      console.log(data.items.length, 'items length')
       data.queryString = csvArry[count].q
       MongoDB.insertOne(data).then(result => {
         count++
@@ -82,7 +85,30 @@ function sleep(func, space) {
 }
 
 
+function getChannelVideo(data) {
+  return new Promise((resolve, rejecr) => {
+    const formdata = getFormData({ "channelid":"UCq-Fj5jknLsUf-MWSy4_brA" })
+    const url = `https://socialblade.com/js/class/youtube-video-recent`
+    console.log(1)
+    request.post(url).type('form').send(formdata).then((result) => {
+      console.log(result)
+    }).catch((err) => {
+      console.log(err)
+      
+    });
+  })
+}
 
+function getFormData(ObjData) {
+  const formdata = new FormData()
+  for (const key in ObjData) {
+    if (ObjData.hasOwnProperty(key)) {
+      const element = ObjData[key];
+      formdata.append(key, element)
+    }
+  }
+  return formdata
+}
 
 
 
