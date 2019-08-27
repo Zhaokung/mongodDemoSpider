@@ -54,7 +54,7 @@ function requestAPI(data) {
   })
 }
 
-let count = 0
+let count = 4357
 function start() {
   if (csvArry[count]) {
     console.log(csvArry[count])
