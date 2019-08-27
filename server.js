@@ -15,7 +15,7 @@ getCsv().then(res=>{
       csvArry.push({"q":element.name})
     });
   }
-  //  console.log(csvArry)
+   console.log(csvArry.length)
 })
 
 
@@ -54,7 +54,7 @@ function requestAPI(data) {
   })
 }
 
-let count = 4357
+let count = 0
 function start() {
   if (csvArry[count]) {
     console.log(csvArry[count])
