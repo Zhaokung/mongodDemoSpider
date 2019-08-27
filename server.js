@@ -96,7 +96,7 @@ function getChannelVideo(data) {
         description: data.channelId,
         videos: result.text
       }
-      resolve(JSON.parse(tempdata))
+      resolve(tempdata)
     }).catch((err) => {
       console.log('这里失败了')
       reject(err)
