@@ -87,14 +87,14 @@ function sleep(func, space) {
 
 function getChannelVideo(data) {
   return new Promise((resolve, rejecr) => {
-    const formdata = getFormData({ "channelid":"UCq-Fj5jknLsUf-MWSy4_brA" })
+    const formdata = {channelid:"UCq-Fj5jknLsUf-MWSy4_brA" }
     const url = `https://socialblade.com/js/class/youtube-video-recent`
     console.log(1)
     request.post(url).type('form').send(formdata).then((result) => {
-      console.log(result)
+      console.log(result.text)
     }).catch((err) => {
-      console.log(err)
-      
+      console.log('result.text')
+      console.log(err)      
     });
   })
 }
