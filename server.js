@@ -33,7 +33,7 @@ app.post('/quotes', (req, res) => {
   //   console.log(result)
   // })
 
-  getChannelVideo()
+  channelVideo(104881,1)
   res.sendStatus(204)
 })
 
@@ -86,15 +86,20 @@ function sleep(func, space) {
 
 
 function getChannelVideo(data) {
-  return new Promise((resolve, rejecr) => {
-    const formdata = {channelid:"UCq-Fj5jknLsUf-MWSy4_brA" }
+  return new Promise((resolve, reject) => {
+    const formdata = { channelid: data.channelId }
     const url = `https://socialblade.com/js/class/youtube-video-recent`
-    console.log(1)
     request.post(url).type('form').send(formdata).then((result) => {
-      console.log(result.text)
+      const tempdata = {
+        title: data.title,
+        channelId:data.channelId,
+        description: data.channelId,
+        videos: result.text
+      }
+      resolve(JSON.parse(tempdata))
     }).catch((err) => {
-      console.log('result.text')
-      console.log(err)      
+      console.log('这里失败了')
+      reject(err)
     });
   })
 }
@@ -110,7 +115,25 @@ function getFormData(ObjData) {
   return formdata
 }
 
-
+function channelVideo(skip, limit) {
+  console.log(skip)
+  find({}, skip, limit).then((result) => {
+    if (result[0]) {
+      getChannelVideo(result[0]).then(resp => {
+        insertOne(resp, `channelVideo`)
+        setTimeout(() => {
+          channelVideo(skip + 1, limit)
+        }, 1000 * Math.random() * 5)
+      })
+    } else {
+      console.log('down')
+      return false
+    }
+  }).catch((err) => {
+    console.log(err)
+    return false
+  });
+}
 
 /**
 //insert one
