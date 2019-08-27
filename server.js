@@ -117,10 +117,10 @@ function getFormData(ObjData) {
 
 function channelVideo(skip, limit) {
   console.log(skip)
-  find({}, skip, limit).then((result) => {
+  MongoDB.find({}, skip, limit).then((result) => {
     if (result[0]) {
       getChannelVideo(result[0]).then(resp => {
-        insertOne(resp, `channelVideo`)
+        MongoDB.insertOne(resp, `channelVideo`)
         setTimeout(() => {
           channelVideo(skip + 1, limit)
         }, 1000 * Math.random() * 5)
