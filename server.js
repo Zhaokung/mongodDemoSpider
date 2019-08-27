@@ -117,8 +117,9 @@ function getFormData(ObjData) {
 
 function channelVideo(skip, limit) {
   console.log(skip)
-  MongoDB.find({}, skip, limit).then((result) => {
+  MongoDB.find({}, skip, limit,`channelIdColl`).then((result) => {
     if (result[0]) {
+      console.log(result[0],'sss')
       getChannelVideo(result[0]).then(resp => {
         MongoDB.insertOne(resp, `channelVideo`)
         setTimeout(() => {

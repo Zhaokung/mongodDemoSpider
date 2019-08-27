@@ -12,7 +12,7 @@ MongoClient.connect(`${mongoUrl}${database}`, (err, database) => {
 
 function insertOne(data, col) {
   return new Promise((resolve, reject) => {
-    const Collection = col || `channel`
+    let Collection = col || `channel`
     db.collection(Collection).insertOne(data, (err, result) => {
       if (err) {
         reject(err)
@@ -24,7 +24,7 @@ function insertOne(data, col) {
 
 function find(data, skip, limit, col) {
   return new Promise((resolve, reject) => {
-    const Collection = col || `channel`
+    let Collection = col || `channel`
     db.collection(Collection).find(data, { skip: skip, limit: limit }).toArray((err, result) => {
       if (err) {
         reject(err)
