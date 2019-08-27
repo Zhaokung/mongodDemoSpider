@@ -93,10 +93,10 @@ function getChannelVideo(data) {
       const tempdata = {
         title: data.title,
         channelId:data.channelId,
-        description: data.channelId,
+        description: data.description,
         videos: result.text
       }
-      resolve(tempdata)
+      resolve(JSON.parse(JSON.stringify(tempdata)))
     }).catch((err) => {
       console.log('这里失败了')
       reject(err)
