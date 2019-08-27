@@ -17,6 +17,7 @@ function insertOne(data, col) {
       if (err) {
         reject(err)
       }
+      console.log('save to database')
       resolve(true)
     })
   })
