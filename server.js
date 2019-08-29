@@ -33,7 +33,7 @@ app.post('/quotes', (req, res) => {
   //   console.log(result)
   // })
 
-  channelVideo(26114,1)
+  channelVideo(104882,1)
   res.sendStatus(204)
 })
 
@@ -120,9 +120,9 @@ function channelVideo(skip, limit) {
   MongoDB.find({}, skip, limit,`channelIdColl`).then((result) => {
     if (result[0]) {
       getChannelVideo(result[0]).then(resp => {
-        MongoDB.insertOne(resp, `channelVideo`)
+        MongoDB.insertOne(resp, `channelVideoBackOrd`)
         setTimeout(() => {
-          channelVideo(skip + 1, limit)
+          channelVideo(skip - 1, limit)
         }, 1000 * Math.random() * 5)
       })
     } else {
