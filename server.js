@@ -120,6 +120,7 @@ function channelVideo(skip, limit) {
   MongoDB.find({}, skip, limit,`channelIdColl`).then((result) => {
     if (result[0]) {
       getChannelVideo(result[0]).then(resp => {
+        
         MongoDB.insertOne(resp, `channelVideoBackOrd`)
         setTimeout(() => {
           channelVideo(skip - 1, limit)
