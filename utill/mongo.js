@@ -9,6 +9,7 @@ function connectDb(){
     if (err) {
       console.log(err)
       setTimeout(()=>{
+        console.log('reconnet')
         connectDb()
       },1000*2)
     }
