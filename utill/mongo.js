@@ -2,13 +2,20 @@
 const MongoClient = require('mongodb').MongoClient
 var db
 
-
-const mongoUrl = `mongodb://2o5572137z.qicp.vip:31754/`
-const database = `youtube`
-MongoClient.connect(`${mongoUrl}${database}`, (err, database) => {
-  if (err) return console.log(err)
-  db = database
-})
+function connectDb(){
+  const mongoUrl = `mongodb://2o5572137z.qicp.vip:31754/`
+  const database = `youtube`
+  MongoClient.connect(`${mongoUrl}${database}`, (err, database) => {
+    if (err) {
+      console.log(err)
+      setTimeout(()=>{
+        connectDb()
+      },1000*2)
+    }
+    db = database
+  })
+}
+connectDb()
 
 function insertOne(data, col) {
   return new Promise((resolve, reject) => {
