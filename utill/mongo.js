@@ -24,7 +24,7 @@ function insertOne(data, col) {
       if (err) {
         reject(err)
       }
-      console.log('save to database')
+      console.log(`${new Date()}:save to database`)
       resolve(true)
     })
   })
