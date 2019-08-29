@@ -23,8 +23,8 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // setup
-app.listen(5008, () => {
-  console.log('listen on http://34.92.145.1:5008/')
+app.listen(5006, () => {
+  console.log('listen on http://34.92.145.1:5006/')
 })
 
 app.post('/quotes', (req, res) => {
@@ -119,8 +119,7 @@ function channelVideo(skip, limit) {
   console.log(skip)
   MongoDB.find({}, skip, limit,`channelIdColl`).then((result) => {
     if (result[0]) {
-      getChannelVideo(result[0]).then(resp => {
-        
+      getChannelVideo(result[0]).then(resp => {        
         MongoDB.insertOne(resp, `channelVideoBackOrd`)
         setTimeout(() => {
           channelVideo(skip - 1, limit)
