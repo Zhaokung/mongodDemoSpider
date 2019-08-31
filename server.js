@@ -33,7 +33,7 @@ app.post('/quotes', (req, res) => {
   //   console.log(result)
   // })
 
-  channelVideo(72696,1)
+  channelVideo(63144,1)
   res.sendStatus(204)
 })
 
@@ -118,7 +118,7 @@ function getFormData(ObjData) {
 function channelVideo(skip, limit) {
   console.log(skip)
   MongoDB.find({}, skip, limit,`channelIdColl`).then((result) => {
-    if (result[0]) {
+    if (result[0] && skip<= 69000) {
       getChannelVideo(result[0]).then(resp => {
         MongoDB.insertOne(resp, `channelVideo`)
         setTimeout(() => {
