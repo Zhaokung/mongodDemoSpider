@@ -48,16 +48,34 @@ function loopChannelID(skip, limit) {
   find({}, skip, limit).then(result => {
     if (result[0]) {
       result[0].items.forEach(el => {
-        const keyId = el.id
+        const keyId = el.snippet
         keyId.youtubeUrl = `https://www.youtube.com/channel/${el.id.channelId}`
         keyId.socialUrl = `https://socialblade.com/youtube/channel/${el.id.channelId}/videos`
-        keyId.title = el.snippet.title
-        keyId.description = el.snippet.title
-        insertOne(keyId, `channelIdColl`)
+        insertOne(keyId, `channelIdCollList`)
       });
       setTimeout(() => {
         loopChannelID(skip + 1, limit)
-      }, 100)
+      }, 10)
+    } else {
+      console.log('down')
+      return false
+    }
+  }).catch(err => {
+    console.log(err)
+    return false
+  })
+}
+
+function loopID(skip, limit) {
+  console.log(skip)
+  find({}, skip, limit, `channelVideoBackOrd`).then(result => {
+    // console.log(result[0])
+    if (result[0]) {
+      const keyId =  result[0]
+      insertOne(keyId, `channelVideo`)
+      setTimeout(() => {
+        loopID(skip + 1, limit)
+      }, 10)
     } else {
       console.log('down')
       return false
@@ -71,7 +89,8 @@ function loopChannelID(skip, limit) {
 const MongoDB = {
   insertOne,
   find,
-  loopChannelID
+  loopChannelID,
+  loopID
 }
 
 module.exports = MongoDB
