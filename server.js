@@ -1,12 +1,15 @@
 const express = require('express')
 const app = express()
 const request = require('superagent');
+const MD5 = require('md5')
 const bodyParser = require('body-parser')
 // require('superagent-proxy')(request)
 // const { getApi } = require('./utill/api')
 const FormData = require('form-data');
-const { getCsv } = require('./utill/readerCsv')
+const { getCsv, writeJSONFiel } = require('./utill/readerCsv')
+const { getJSON } = require('./utill/zh.js')
 const MongoDB = require('./utill/mongo')
+
 const csvArry = []
 
 // getCsv().then(res=>{
@@ -24,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // setup
 app.listen(5006, () => {
-  console.log('listen on http://34.92.145.1:5006/')
+  console.log('listen on http://localhost:5006/')
 })
 
 app.post('/quotes', (req, res) => {
@@ -34,7 +37,10 @@ app.post('/quotes', (req, res) => {
   // })
 
   // channelVideo(69793,1)
-  MongoDB.loopChannelID(0,1)
+  // MongoDB.loopChannelID(0,1)
+
+  out()
+
   res.sendStatus(204)
 })
 
@@ -43,6 +49,52 @@ app.get('/quotes', (req, res) => {
 })
 
 app.get('/', express.static(__dirname + '/public'))
+
+
+function BaiduTranslet(query) {
+  return new Promise((resolve, reject) => {
+    setTimeout(()=>{
+      const url = 'http://fy.iciba.com/ajax.php?a=fy'
+      const data = {
+        f: 'zh',
+        t: 'en',
+        w: query
+      }
+      request.post(url).type('form').send(data).end((err, result) => {
+        if (err) {
+          reject('获取失败')
+        }
+        resolve(result)
+      })
+    },100)
+  })
+}
+
+const tes = {
+  name:'名字',
+  app: { appl:'苹果'}
+}
+const json = getJSON()
+async function eachObj(data) {
+  for (const key in data) {
+    if (data.hasOwnProperty(key) && typeof (data[key]) === 'string') {
+      const element = await BaiduTranslet(data[key]) 
+      console.log(data[key]+'::'+JSON.parse(element.text).content.out)
+      data[key] = JSON.parse(element.text).content.out
+    } else {
+      eachObj(data[key])
+    }
+  }
+ 
+}
+
+async function out(){
+  await eachObj(json)
+  setTimeout(() => {
+    console.log(json)
+    writeJSONFiel(json)
+  }, 1000*16);
+}
 
 
 //API获取数据
@@ -93,7 +145,7 @@ function getChannelVideo(data) {
     request.post(url).type('form').send(formdata).then((result) => {
       const tempdata = {
         title: data.title,
-        channelId:data.channelId,
+        channelId: data.channelId,
         description: data.description,
         videos: JSON.parse(result.text)
       }
@@ -118,9 +170,9 @@ function getFormData(ObjData) {
 
 function channelVideo(skip, limit) {
   console.log(skip)
-  MongoDB.find({}, skip, limit,`channelIdColl`).then((result) => {
+  MongoDB.find({}, skip, limit, `channelIdColl`).then((result) => {
     if (result[0] && skip > 69000) {
-      getChannelVideo(result[0]).then(resp => {        
+      getChannelVideo(result[0]).then(resp => {
         MongoDB.insertOne(resp, `channelVideoBackOrd`)
         setTimeout(() => {
           channelVideo(skip - 1, limit)
