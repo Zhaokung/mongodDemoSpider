@@ -1,4 +1,4 @@
-const csvFilePath = './utill/TOP5000.csv'
+const csvFilePath = './utill/浩方2.csv'
 const csv = require('csvtojson')
 // const loadJsonFile = require('load-json-file');
 const writeJsonFile = require('write-json-file');
@@ -9,6 +9,7 @@ var translate = require("translate")
 function getCsv() {
     return new Promise((resolve, reject) => {
         csv().fromFile(csvFilePath).then(jsonArray => {
+            // console.log(jsonArray)
             resolve(jsonArray)
         }).catch(err => {
             reject(err)
@@ -29,7 +30,19 @@ async function writeJSONFiel(json){
 
 
 
-
+getCsv().then((res)=>{
+    const sendArry = []
+    res.forEach(element => {
+        const temp = {
+            channelUrl : element['链接'],
+            tags: `${element['视频类别'].split(/\s|,|、/).toString()},负责的产品,${element['负责产品'].split(/\s|,|、/).toString()}`
+        }
+        if(temp.channelUrl){
+            sendArry.push(temp)
+        }
+    });
+    console.log(sendArry)
+})
 
 module.exports = {
     getCsv,
