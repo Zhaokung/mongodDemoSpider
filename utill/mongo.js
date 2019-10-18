@@ -16,7 +16,7 @@ function connectDb(){
     db = database
   })
 }
-connectDb()
+// connectDb()
 
 function insertOne(data, col) {
   return new Promise((resolve, reject) => {
